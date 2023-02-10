@@ -1,0 +1,48 @@
+
+
+1. Design Schema to store the CSV data
+
+create database Thales
+create table stock ( id int AUTO_INCREMENT primary key NOT NULL, Date DATE, , StockName VARCHAR(20), Open_rate FLOAT(12,8), High_rate FLOAT(12
+,8), Low_rate  FLOAT(12,8), Close_rate FLOAT(12,8), AdjClose_rate FLOAT(12,8), Volume int(15));
+
+2. SQL Query to calculate the Weekly, Monthly, Quaterly and Yearly average of the columns High, Low and Volume:
+
+select Year(Date) as 'Year', '', '', '', avg(Open), avg(High), avg(Low), avg(Close), avg(`Adj Close`), avg(Volume) 
+from thales.msft group by Year(Date)
+union All
+select Year(Date) as 'Year', Quarter(Date) as 'Quarter', '', '',  avg(Open), avg(High), avg(Low), avg(Close), avg(`Adj Close`), avg(Volume) 
+from thales.msft group by Year(Date), Quarter(Date)
+union All
+select Year(Date) as 'Year', Quarter(Date) as 'Quarter', Month(Date) as 'Month', '',  avg(Open), avg(High), avg(Low), avg(Close), avg(`Adj Close`), avg(Volume) 
+from thales.msft group by Year(Date), Quarter(Date), Month(Date)
+union ALL
+select Year(Date) as 'Year', Quarter(Date) as 'Quarter', Month(Date) as 'Month', Week(Date) as 'Week', avg(Open), avg(High), avg(Low), avg(Close), avg(`Adj Close`), avg(Volume) 
+from thales.msft group by Year(Date), Quarter(Date), Month(Date), Week(Date);
+
+OR by using Grouping Sets instead of using multiple union statements
+
+select 
+case
+	when Quarter(Date) is NULL then 'YEARLY'
+	when Month(Date) is NULL then 'QUARTERLY'
+	when Week(Date) is NULL then 'MONTHLY'
+	else 'WEEKLY'
+	end as Averages,
+Year(Date), Quarter(Date), Month(Date), Week(Date), 
+avg(Open), avg(High), avg(Low), avg(Close), 
+avg(`Adj Close`), avg(Volume)
+from thales.msft
+group by Grouping Sets (
+(Year(Date)),
+(Year(Date), Quarter(Date)),
+(Year(Date), Quarter(Date), Month(Date)),
+(Year(Date), Quarter(Date), Month(Date), Week(Date)));
+
+
+
+
+
+
+
+
