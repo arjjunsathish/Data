@@ -1,4 +1,4 @@
-# Thales-Project
+# Project
 
 ## SQL Queries:
 
